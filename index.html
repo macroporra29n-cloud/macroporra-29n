@@ -343,7 +343,14 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
 .rk-wrap { max-width: 900px; }
 table.rk { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 15px; }
 .rk th, .rk td { padding: 9px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
-.rk th { font-size: 13px; color: var(--muted); font-weight: 700; border-bottom: 1.5px solid var(--ink); vertical-align: bottom; }
+.rk th { font-size: 13px; color: var(--muted); font-weight: 700; border-bottom: 1.5px solid var(--ink); vertical-align: bottom; white-space: normal; line-height: 1.25; }
+.rk th:not(.nm):not(.pos) { min-width: 84px; max-width: 120px; }
+.rk th small { display: block; font-weight: 600; font-size: 12px; opacity: .8; margin-top: 2px; }
+.rk th.tt { color: var(--ink); }
+.rk td.dz { color: var(--muted); }
+.rk .d1 { border-left: 1px solid var(--rule); }
+.rk-ley { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 6px; max-width: 900px; font-size: 14px; color: var(--muted); }
+.rk-ley b { color: var(--ink); }
 .rk th.nm, .rk td.nm { text-align: left; white-space: normal; width: 100%; overflow-wrap: anywhere; }
 .rk th.pos, .rk td.pos { text-align: left; padding-left: 14px; }
 .rk td.pos { font-weight: 800; }
@@ -385,6 +392,11 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
 .pt tr.me td { background: color-mix(in srgb, var(--focus) 13%, var(--surface)); }
 .pt tr.me td.hit { background: color-mix(in srgb, var(--ok) 22%, var(--surface)); }
 .pt tbody tr:last-child td { border-bottom: 0; }
+.pt td.lst, .pt th.lst { text-align: left; white-space: normal; min-width: 220px; }
+.pt .chip { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.pt .chip i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.pt .plus { margin-left: 10px; font-weight: 800; color: var(--ok); }
+.pt .plus.cero { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -1659,13 +1671,13 @@ function renderRank(j) {
     if (lista.length) {
       body.appendChild(el("ul", { class: "rk-list" }, lista.map(function (n) { return el("li", { class: claveNom(n) === yo && yo ? "me" : "", text: n }); })));
     }
-    renderPorras(body, j.porras || [], null, yo);
+    renderPorras(body, j.porras || [], null, yo, j);
     return;
   }
   var filas = j.filas || [];
   if (!filas.length) { body.appendChild(el("p", { class: "rk-n", text: "Aún no hay participantes confirmados." })); return; }
-  var cols = [["pos", "Pos.", ""], ["nm", "Participante", ""], ["tt", "Total", ""], ["dz", "Escaños", "escanos"], ["dz", "Clavadas", "clavadas"], ["dz", "Ganadores", "ganador"], ["dz", "Totales España", "nacional"], ["dz", "Más votado", "masVotado"]];
-  var hr = el("tr", {}, cols.map(function (c) { return el("th", { class: c[0], text: c[1], scope: "col" }); }));
+  var cols = [["pos", "Pos.", ""], ["nm", "Participante", ""], ["tt", "Puntos totales", "máx. 528"], ["dz d1", "Escaños acertados", "máx. 350"], ["dz", "Provincias clavadas", "máx. 61"], ["dz", "Ganador de cada provincia", "máx. 52"], ["dz", "Totales PP, PSOE, Vox y FA", "máx. 60"], ["dz", "Partido más votado", "máx. 5"]];
+  var hr = el("tr", {}, cols.map(function (c) { return el("th", { class: c[0], scope: "col" }, [c[1]].concat(c[2] ? [el("small", { text: c[2] })] : [])); }));
   var tb = el("tbody");
   filas.forEach(function (f) {
     var me = yo && claveNom(f.nombre) === yo;
@@ -1673,16 +1685,16 @@ function renderRank(j) {
       el("td", { class: "pos num", text: String(f.pos) }),
       el("td", { class: "nm", text: f.nombre }),
       el("td", { class: "tt num", text: fmtPts(f.total) }),
-      el("td", { class: "dz num", text: fmtPts(f.escanos) }),
+      el("td", { class: "dz d1 num", text: fmtPts(f.escanos) }),
       el("td", { class: "dz num", text: fmtPts(f.clavadas) }),
       el("td", { class: "dz num", text: fmtPts(f.ganador) }),
       el("td", { class: "dz num", text: fmtPts(f.nacional) }),
       el("td", { class: "dz num", text: fmtPts(f.masVotado) })
     ]);
     var det = el("tr", { class: "det" + (me ? " me" : "") }, [el("td", { colspan: "3" }, [
-      "Escaños ", el("b", { text: fmtPts(f.escanos) }), " · Clavadas ", el("b", { text: fmtPts(f.clavadas) }),
-      " · Ganadores ", el("b", { text: fmtPts(f.ganador) }), " · Totales España ", el("b", { text: fmtPts(f.nacional) }),
-      " · Más votado ", el("b", { text: fmtPts(f.masVotado) })
+      "Escaños acertados ", el("b", { text: fmtPts(f.escanos) }), " · Provincias clavadas ", el("b", { text: fmtPts(f.clavadas) }),
+      " · Ganador de cada provincia ", el("b", { text: fmtPts(f.ganador) }), " · Totales PP, PSOE, Vox y FA ", el("b", { text: fmtPts(f.nacional) }),
+      " · Partido más votado ", el("b", { text: fmtPts(f.masVotado) })
     ])]);
     tr.addEventListener("click", function () { tr.classList.toggle("open"); });
     tb.appendChild(tr); tb.appendChild(det);
@@ -1690,49 +1702,127 @@ function renderRank(j) {
   body.appendChild(el("p", { class: "rk-n", text: plural(filas.length, "participante", "participantes") }));
   body.appendChild(el("div", { class: "tablewrap rk-wrap", style: "margin-top:10px" }, [el("table", { class: "rk" }, [el("thead", {}, [hr]), tb])]));
   body.appendChild(el("p", { class: "rk-hint", text: "Pulsa en un participante para ver el desglose de sus puntos." }));
-  renderPorras(body, filas, j.real || {}, yo);
+  var ley = [
+    ["Puntos totales", "la suma de las cinco columnas siguientes. Con empate a puntos, va delante quien tenga más escaños acertados y, si sigue el empate, quien menos falle en los totales de España."],
+    ["Escaños acertados", "1 punto por cada escaño que coincide, provincia a provincia y partido a partido (se cuenta el menor de lo que pusiste y lo que salió)."],
+    ["Provincias clavadas", "bonus por acertar una provincia entera: +1 si tiene de 4 a 8 escaños, +3 de 9 a 16 y +6 en Madrid y Barcelona. Las de 3 escaños o menos no dan bonus."],
+    ["Ganador de cada provincia", "1 punto por acertar el partido con más escaños en cada provincia. Si hay empate en cabeza, el punto se reparte; por eso pueden salir decimales."],
+    ["Totales PP, PSOE, Vox y FA", "hasta 15 puntos por partido según lo cerca que quede tu total de España: 15 si es exacto, 9 si fallas por 1 o 2, 5 por 3 a 5 y 2 por 6 a 10."],
+    ["Partido más votado", "5 puntos si aciertas el partido con más escaños en toda España."]
+  ];
+  body.appendChild(el("ul", { class: "rk-ley" }, ley.map(function (x) { return el("li", {}, [el("b", { text: x[0] + ": " }), x[1]]); })));
+  renderPorras(body, filas, j.real || {}, yo, j);
 }
-/* Tabla: totales de España de cada porra */
+/* Tablas de detalle: una por tipo de puntuación */
 var NAC4 = ["pp", "psoe", "vox", "fa"];
-function renderPorras(body, gente, real, yo) {
-  if (!gente.length) return;
-  var hay = real !== null;
-  var cols = PARTY_ORDER.filter(function (p) {
-    if (hay && real[p] > 0) return true;
-    return gente.some(function (g) { return g.tot && g.tot[p] > 0; });
-  });
-  NAC4.forEach(function (p) { if (cols.indexOf(p) < 0) cols.push(p); });
-  cols.sort(function (a, b) { return PARTY_ORDER.indexOf(a) - PARTY_ORDER.indexOf(b); });
-  body.appendChild(el("h3", { class: "part", text: "Totales de España de cada porra" }));
-  body.appendChild(el("p", { class: "sec-sub", text: hay
-    ? "Escaños que suma la porra de cada participante en toda España, frente al resultado. En PP, PSOE, Vox y Frente Amplio, debajo de cada cifra van los puntos que da ese total. En verde, los totales clavados."
-    : "Escaños que suma la porra de cada participante en toda España. Cuando haya resultados, aquí verás también los puntos de cada total." }));
+function colsCon(objs) {
+  return PARTY_ORDER.filter(function (p) { return objs.some(function (o) { return o && o[p] > 0; }); });
+}
+function ptTitulo(body, titulo, sub) {
+  body.appendChild(el("h3", { class: "part", text: titulo }));
+  body.appendChild(el("p", { class: "sec-sub", text: sub }));
+}
+function ptTabla(body, cab, filas) {
+  body.appendChild(el("div", { class: "tablewrap pt-wrap" }, [el("table", { class: "pt" }, [el("thead", {}, [cab]), el("tbody", {}, filas)])]));
+}
+function cabPartidos(cols, ultima) {
   var hr = el("tr", {}, [el("th", { class: "pn", text: "Participante", scope: "col" })].concat(cols.map(function (p) {
     return el("th", { scope: "col" }, [el("span", { class: "pc", style: "background:" + PARTIES[p].color }), PARTIES[p].short]);
   })));
-  if (hay) { hr.appendChild(el("th", { class: "sum", text: "Puntos", scope: "col" })); }
-  var tb = el("tbody");
-  if (hay) {
-    var rr = el("tr", { class: "real" }, [el("td", { class: "pn", text: "Resultado" })].concat(cols.map(function (p) { return el("td", { class: "num", text: String(real[p] || 0) }); })));
-    rr.appendChild(el("td", { class: "num sum", text: "" }));
-    tb.appendChild(rr);
+  if (ultima) hr.appendChild(el("th", { class: "sum", text: ultima, scope: "col" }));
+  return hr;
+}
+/* Tabla de partidos genérica: fila Resultado + una fila por persona */
+function tablaPartidos(body, gente, yo, o) {
+  var filas = [];
+  if (o.real) {
+    var rr = el("tr", { class: "real" }, [el("td", { class: "pn", text: o.etiquetaReal || "Resultado" })].concat(o.cols.map(function (p) { return el("td", { class: "num", text: fmtPts(o.real[p] || 0) }); })));
+    if (o.ultima) rr.appendChild(el("td", { class: "num sum", text: o.sumReal !== undefined ? fmtPts(o.sumReal) : "" }));
+    filas.push(rr);
   }
   gente.forEach(function (g) {
-    var me = yo && claveNom(g.nombre) === yo, t = g.tot || {};
+    var me = yo && claveNom(g.nombre) === yo;
     var tr = el("tr", { class: me ? "me" : "" }, [el("td", { class: "pn", text: g.nombre })]);
-    cols.forEach(function (p) {
-      var v = t[p] || 0, td = el("td", { class: "num" + (v === 0 ? " zero" : "") }, [String(v)]);
-      if (hay && NAC4.indexOf(p) >= 0) {
-        var pts = (g.ptsNac && g.ptsNac[p]) || 0;
-        if (pts === 15) td.className += " hit";
-        td.appendChild(el("small", { text: "+" + pts }));
-      }
+    o.cols.forEach(function (p) {
+      var c = o.celda(g, p), td = el("td", { class: "num" + (c.v === 0 ? " zero" : "") + (c.hit ? " hit" : "") }, [fmtPts(c.v)]);
+      if (c.small !== undefined) td.appendChild(el("small", { text: c.small }));
       tr.appendChild(td);
     });
-    if (hay) tr.appendChild(el("td", { class: "num sum", text: fmtPts(g.nacional) }));
-    tb.appendChild(tr);
+    if (o.ultima) tr.appendChild(el("td", { class: "num sum", text: fmtPts(o.suma(g)) }));
+    filas.push(tr);
   });
-  body.appendChild(el("div", { class: "tablewrap pt-wrap" }, [el("table", { class: "pt" }, [el("thead", {}, [hr]), tb])]));
+  ptTabla(body, cabPartidos(o.cols, o.ultima), filas);
+}
+function nombresPartidos(ids) {
+  if (!ids || !ids.length) return [el("span", { class: "zero", text: "Sin escaños" })];
+  var out = [];
+  ids.forEach(function (p, i) {
+    if (i) out.push(" y ");
+    out.push(el("span", { class: "chip" }, [el("i", { style: "background:" + (PARTIES[p] ? PARTIES[p].color : "#8A94A3") }), PARTIES[p] ? PARTIES[p].short : p]));
+  });
+  if (ids.length > 1) out.push(" (empate)");
+  return out;
+}
+function renderPorras(body, gente, real, yo, j) {
+  if (!gente.length) return;
+  var hay = real !== null;
+  if (hay) {
+    /* 1. Escaños acertados por partido */
+    var cE = colsCon([real].concat(gente.map(function (g) { return g.escP; })));
+    ptTitulo(body, "Escaños acertados, por partido", "Cuántos escaños de cada partido acertó cada participante, sumando todas las provincias (en cada provincia cuenta el menor de lo que puso y lo que salió). Cada escaño acertado vale 1 punto. La fila Resultado son los escaños reales. En verde, los partidos en los que acertó todos sus escaños.");
+    tablaPartidos(body, gente, yo, { cols: cE, real: real, ultima: "Puntos", sumReal: 350,
+      celda: function (g, p) { var v = (g.escP && g.escP[p]) || 0; return { v: v, small: "+" + fmtPts(v), hit: v > 0 && v === (real[p] || 0) }; },
+      suma: function (g) { return g.escanos; } });
+
+    /* 2. Provincias clavadas */
+    ptTitulo(body, "Provincias clavadas", "Provincias en las que el participante acertó el reparto completo, partido a partido. Al lado de cada una, el bonus que da: +1 si tiene de 4 a 8 escaños, +3 de 9 a 16, +6 en Madrid y Barcelona y 0 en las de 3 escaños o menos.");
+    var cabC = el("tr", {}, [el("th", { class: "pn", text: "Participante", scope: "col" }), el("th", { class: "lst", text: "Provincias clavadas", scope: "col" }), el("th", { text: "Nº", scope: "col" }), el("th", { class: "sum", text: "Puntos", scope: "col" })]);
+    ptTabla(body, cabC, gente.map(function (g) {
+      var me = yo && claveNom(g.nombre) === yo, lista = (g.clav || []).slice().sort(function (a, b) { return b[1] - a[1] || PROV[a[0]].n.localeCompare(PROV[b[0]].n, "es"); });
+      var txt = lista.length ? lista.map(function (x) { return PROV[x[0]].n + " " + (x[1] ? "+" + x[1] : "0"); }).join(" · ") : "Ninguna";
+      return el("tr", { class: me ? "me" : "" }, [el("td", { class: "pn", text: g.nombre }), el("td", { class: "lst" + (lista.length ? "" : " zero"), text: txt }), el("td", { class: "num", text: String(lista.length) }), el("td", { class: "num sum", text: fmtPts(g.clavadas) })]);
+    }));
+
+    /* 3. Ganador de cada provincia, por partido */
+    var gR = j.ganReal || {};
+    var cG = colsCon([gR].concat(gente.map(function (g) { return g.ganP; })));
+    ptTitulo(body, "Ganador de cada provincia, por partido", "En cuántas provincias acertó cada participante que ganaba ese partido; cada una vale 1 punto. La fila Resultado es en cuántas provincias ganó de verdad cada partido. Si hay empate en cabeza, la provincia se reparte entre los empatados; por eso pueden salir decimales. En verde, los partidos en los que acertó todas sus provincias.");
+    tablaPartidos(body, gente, yo, { cols: cG, real: gR, etiquetaReal: "Provincias ganadas", ultima: "Puntos", sumReal: 52,
+      celda: function (g, p) { var v = (g.ganP && g.ganP[p]) || 0; return { v: v, small: "+" + fmtPts(v), hit: v > 0 && Math.abs(v - (gR[p] || 0)) < 0.01 }; },
+      suma: function (g) { return g.ganador; } });
+  }
+
+  /* 4. Totales de España */
+  var cT = colsCon((hay ? [real] : []).concat(gente.map(function (g) { return g.tot; })));
+  NAC4.forEach(function (p) { if (cT.indexOf(p) < 0) cT.push(p); });
+  cT.sort(function (a, b) { return PARTY_ORDER.indexOf(a) - PARTY_ORDER.indexOf(b); });
+  ptTitulo(body, "Totales de España de cada porra", hay
+    ? "Escaños que suma la porra de cada participante en toda España, frente al resultado. Solo puntúan PP, PSOE, Vox y Frente Amplio: debajo de cada cifra van los puntos que da (+15 si es exacto, +9 si falla por 1 o 2, +5 por 3 a 5, +2 por 6 a 10 y +0 si falla por más). En verde, los totales clavados."
+    : "Escaños que suma la porra de cada participante en toda España. Cuando haya resultados, aquí verás también los puntos de cada total.");
+  tablaPartidos(body, gente, yo, { cols: cT, real: hay ? real : null, ultima: hay ? "Puntos" : "",
+    celda: function (g, p) {
+      var v = (g.tot && g.tot[p]) || 0, c = { v: v };
+      if (hay && NAC4.indexOf(p) >= 0) { var pts = (g.ptsNac && g.ptsNac[p]) || 0; c.small = "+" + pts; c.hit = pts === 15; }
+      return c;
+    },
+    suma: function (g) { return g.nacional; } });
+
+  /* 5. Partido más votado */
+  ptTitulo(body, "Partido más votado", hay
+    ? "El partido con más escaños en la porra de cada participante, frente al que más escaños ha sacado. Si coincide, 5 puntos (con empate, se reparten)."
+    : "El partido con más escaños en la porra de cada participante.");
+  var cabM = el("tr", {}, [el("th", { class: "pn", text: "Participante", scope: "col" }), el("th", { class: "lst", text: "Partido más votado", scope: "col" })].concat(hay ? [el("th", { class: "sum", text: "Puntos", scope: "col" })] : []));
+  var filasM = [];
+  if (hay) filasM.push(el("tr", { class: "real" }, [el("td", { class: "pn", text: "Resultado" }), el("td", { class: "lst" }, nombresPartidos(j.lideresReal)), el("td", { class: "num sum", text: "" })]));
+  gente.forEach(function (g) {
+    var me = yo && claveNom(g.nombre) === yo;
+    var celda = nombresPartidos(g.lid);
+    if (hay) celda.push(el("span", { class: "plus" + (g.masVotado > 0 ? "" : " cero"), text: "+" + fmtPts(g.masVotado) }));
+    var tr = el("tr", { class: me ? "me" : "" }, [el("td", { class: "pn", text: g.nombre }), el("td", { class: "lst" + (hay && g.masVotado > 0 ? " hit" : "") }, celda)]);
+    if (hay) tr.appendChild(el("td", { class: "num sum", text: fmtPts(g.masVotado) }));
+    filasM.push(tr);
+  });
+  ptTabla(body, cabM, filasM);
 }
 $("b-rank").addEventListener("click", function () { loadRank(true); });
 
