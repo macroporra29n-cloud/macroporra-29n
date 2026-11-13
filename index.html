@@ -363,11 +363,16 @@ table.rk { width: 100%; border-collapse: separate; border-spacing: 0; font-size:
 .rk tr.det td { text-align: left; white-space: normal; color: var(--muted); font-size: 14px; padding: 4px 14px 12px; }
 .rk tr.det td b { color: var(--ink); }
 .rk-hint { display: none; color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+.rk .pm { display: none; font-weight: 800; margin-right: 6px; }
 @media (max-width: 640px) {
-  .rk .dz { display: none; }
-  .rk tr.r { cursor: pointer; }
-  .rk tr.r.open td { border-bottom: 0; }
-  .rk tr.r.open + tr.det { display: table-row; }
+  .rk th, .rk td { padding: 8px 8px; }
+  .rk th:not(.nm):not(.pos) { min-width: 74px; }
+  .rk th.pos, .rk td.pos { display: none; }
+  .rk .pm { display: inline; }
+  .rk th.nm, .rk td.nm { position: sticky; left: 0; z-index: 1; background: var(--surface); width: auto; min-width: 104px; max-width: 130px; padding-left: 12px; border-right: 1px solid var(--rule); }
+  .rk th.nm { z-index: 2; }
+  .rk tr.me td.nm::after { content: ""; }
+  .rk td.tt { font-size: 16px; }
   .rk-hint { display: block; }
 }
 .rk-list { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); max-width: 900px; }
@@ -1683,7 +1688,7 @@ function renderRank(j) {
     var me = yo && claveNom(f.nombre) === yo;
     var tr = el("tr", { class: "r" + (me ? " me" : "") }, [
       el("td", { class: "pos num", text: String(f.pos) }),
-      el("td", { class: "nm", text: f.nombre }),
+      el("td", { class: "nm" }, [el("span", { class: "pm", text: f.pos + "." }), f.nombre]),
       el("td", { class: "tt num", text: fmtPts(f.total) }),
       el("td", { class: "dz d1 num", text: fmtPts(f.escanos) }),
       el("td", { class: "dz num", text: fmtPts(f.clavadas) }),
@@ -1696,21 +1701,11 @@ function renderRank(j) {
       " · Ganador de cada provincia ", el("b", { text: fmtPts(f.ganador) }), " · Totales PP, PSOE, Vox y FA ", el("b", { text: fmtPts(f.nacional) }),
       " · Partido más votado ", el("b", { text: fmtPts(f.masVotado) })
     ])]);
-    tr.addEventListener("click", function () { tr.classList.toggle("open"); });
-    tb.appendChild(tr); tb.appendChild(det);
+    tb.appendChild(tr);
   });
   body.appendChild(el("p", { class: "rk-n", text: plural(filas.length, "participante", "participantes") }));
   body.appendChild(el("div", { class: "tablewrap rk-wrap", style: "margin-top:10px" }, [el("table", { class: "rk" }, [el("thead", {}, [hr]), tb])]));
-  body.appendChild(el("p", { class: "rk-hint", text: "Pulsa en un participante para ver el desglose de sus puntos." }));
-  var ley = [
-    ["Puntos totales", "la suma de las cinco columnas siguientes. Con empate a puntos, va delante quien tenga más escaños acertados y, si sigue el empate, quien menos falle en los totales de España."],
-    ["Escaños acertados", "1 punto por cada escaño que coincide, provincia a provincia y partido a partido (se cuenta el menor de lo que pusiste y lo que salió)."],
-    ["Provincias clavadas", "bonus por acertar una provincia entera: +1 si tiene de 4 a 8 escaños, +3 de 9 a 16 y +6 en Madrid y Barcelona. Las de 3 escaños o menos no dan bonus."],
-    ["Ganador de cada provincia", "1 punto por acertar el partido con más escaños en cada provincia. Si hay empate en cabeza, el punto se reparte; por eso pueden salir decimales."],
-    ["Totales PP, PSOE, Vox y FA", "hasta 15 puntos por partido según lo cerca que quede tu total de España: 15 si es exacto, 9 si fallas por 1 o 2, 5 por 3 a 5 y 2 por 6 a 10."],
-    ["Partido más votado", "5 puntos si aciertas el partido con más escaños en toda España."]
-  ];
-  body.appendChild(el("ul", { class: "rk-ley" }, ley.map(function (x) { return el("li", {}, [el("b", { text: x[0] + ": " }), x[1]]); })));
+  body.appendChild(el("p", { class: "rk-hint", text: "Desliza la tabla hacia los lados para ver todas las columnas." }));
   renderPorras(body, filas, j.real || {}, yo, j);
 }
 /* Tablas de detalle: una por tipo de puntuación */
