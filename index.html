@@ -368,6 +368,23 @@ table.rk { width: 100%; border-collapse: separate; border-spacing: 0; font-size:
 .rk-list li.me { border-color: var(--ink); }
 .rk-list li.me::after { content: " (tú)"; color: var(--muted); }
 .rk-n { font-weight: 800; margin: 0; }
+#rk-body h3.part { margin-top: 30px; }
+.pt-wrap { margin-top: 4px; }
+table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-width: 100%; }
+.pt th, .pt td { padding: 8px 10px; text-align: center; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: top; }
+.pt thead th { font-size: 13px; font-weight: 700; color: var(--muted); vertical-align: bottom; border-bottom: 1.5px solid var(--ink); background: var(--surface); }
+.pt thead th .pc { display: block; height: 5px; border-radius: 2px; margin-bottom: 6px; }
+.pt .pn { position: sticky; left: 0; z-index: 1; background: var(--surface); text-align: left; font-weight: 700; border-right: 1px solid var(--rule); min-width: 120px; max-width: 200px; white-space: normal; overflow-wrap: break-word; }
+.pt thead th:not(.pn) { white-space: normal; min-width: 52px; max-width: 110px; }
+.pt td.zero { color: var(--muted); }
+.pt td small { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 1px; }
+.pt td.hit { background: color-mix(in srgb, var(--ok) 18%, var(--surface)); font-weight: 800; }
+.pt td.hit small { color: var(--ok); }
+.pt .sum { font-weight: 900; border-left: 1px solid var(--rule); }
+.pt tr.real td { font-weight: 900; background: var(--surface-2); border-bottom: 1.5px solid var(--ink); }
+.pt tr.me td { background: color-mix(in srgb, var(--focus) 13%, var(--surface)); }
+.pt tr.me td.hit { background: color-mix(in srgb, var(--ok) 22%, var(--surface)); }
+.pt tbody tr:last-child td { border-bottom: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -1642,6 +1659,7 @@ function renderRank(j) {
     if (lista.length) {
       body.appendChild(el("ul", { class: "rk-list" }, lista.map(function (n) { return el("li", { class: claveNom(n) === yo && yo ? "me" : "", text: n }); })));
     }
+    renderPorras(body, j.porras || [], null, yo);
     return;
   }
   var filas = j.filas || [];
@@ -1672,6 +1690,49 @@ function renderRank(j) {
   body.appendChild(el("p", { class: "rk-n", text: plural(filas.length, "participante", "participantes") }));
   body.appendChild(el("div", { class: "tablewrap rk-wrap", style: "margin-top:10px" }, [el("table", { class: "rk" }, [el("thead", {}, [hr]), tb])]));
   body.appendChild(el("p", { class: "rk-hint", text: "Pulsa en un participante para ver el desglose de sus puntos." }));
+  renderPorras(body, filas, j.real || {}, yo);
+}
+/* Tabla: totales de España de cada porra */
+var NAC4 = ["pp", "psoe", "vox", "fa"];
+function renderPorras(body, gente, real, yo) {
+  if (!gente.length) return;
+  var hay = real !== null;
+  var cols = PARTY_ORDER.filter(function (p) {
+    if (hay && real[p] > 0) return true;
+    return gente.some(function (g) { return g.tot && g.tot[p] > 0; });
+  });
+  NAC4.forEach(function (p) { if (cols.indexOf(p) < 0) cols.push(p); });
+  cols.sort(function (a, b) { return PARTY_ORDER.indexOf(a) - PARTY_ORDER.indexOf(b); });
+  body.appendChild(el("h3", { class: "part", text: "Totales de España de cada porra" }));
+  body.appendChild(el("p", { class: "sec-sub", text: hay
+    ? "Escaños que suma la porra de cada participante en toda España, frente al resultado. En PP, PSOE, Vox y Frente Amplio, debajo de cada cifra van los puntos que da ese total. En verde, los totales clavados."
+    : "Escaños que suma la porra de cada participante en toda España. Cuando haya resultados, aquí verás también los puntos de cada total." }));
+  var hr = el("tr", {}, [el("th", { class: "pn", text: "Participante", scope: "col" })].concat(cols.map(function (p) {
+    return el("th", { scope: "col" }, [el("span", { class: "pc", style: "background:" + PARTIES[p].color }), PARTIES[p].short]);
+  })));
+  if (hay) { hr.appendChild(el("th", { class: "sum", text: "Puntos", scope: "col" })); }
+  var tb = el("tbody");
+  if (hay) {
+    var rr = el("tr", { class: "real" }, [el("td", { class: "pn", text: "Resultado" })].concat(cols.map(function (p) { return el("td", { class: "num", text: String(real[p] || 0) }); })));
+    rr.appendChild(el("td", { class: "num sum", text: "" }));
+    tb.appendChild(rr);
+  }
+  gente.forEach(function (g) {
+    var me = yo && claveNom(g.nombre) === yo, t = g.tot || {};
+    var tr = el("tr", { class: me ? "me" : "" }, [el("td", { class: "pn", text: g.nombre })]);
+    cols.forEach(function (p) {
+      var v = t[p] || 0, td = el("td", { class: "num" + (v === 0 ? " zero" : "") }, [String(v)]);
+      if (hay && NAC4.indexOf(p) >= 0) {
+        var pts = (g.ptsNac && g.ptsNac[p]) || 0;
+        if (pts === 15) td.className += " hit";
+        td.appendChild(el("small", { text: "+" + pts }));
+      }
+      tr.appendChild(td);
+    });
+    if (hay) tr.appendChild(el("td", { class: "num sum", text: fmtPts(g.nacional) }));
+    tb.appendChild(tr);
+  });
+  body.appendChild(el("div", { class: "tablewrap pt-wrap" }, [el("table", { class: "pt" }, [el("thead", {}, [hr]), tb])]));
 }
 $("b-rank").addEventListener("click", function () { loadRank(true); });
 
