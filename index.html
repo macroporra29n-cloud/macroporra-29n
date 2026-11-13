@@ -320,6 +320,8 @@ table.sc tr.sum td { font-weight: 900; border-top: 1.5px solid var(--ink); borde
 .rule summary { cursor: pointer; font-weight: 600; color: var(--ink); }
 
 /* Enviar */
+.concept { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
+.concept code { flex: 1 1 220px; min-width: 0; padding: 10px 12px; background: var(--surface-2); border: 1.5px solid var(--rule); border-radius: 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
 .send { max-width: 760px; display: grid; gap: 22px; }
 .card { background: var(--surface); border: 1.5px solid var(--rule); border-radius: 8px; padding: 18px; }
 .card h3 { margin: 0 0 6px; font-size: 22px; font-weight: 800; font-stretch: 80%; font-variation-settings: "wdth" 80; }
@@ -370,7 +372,7 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
   <!-- CÓMO FUNCIONA -->
   <section class="panel" id="p-how" role="tabpanel" aria-labelledby="t-how">
     <h2 class="sec-title">Cómo funciona</h2>
-    <p class="sec-sub">Adivina cuántos escaños sacará cada partido en cada provincia en las elecciones del 29 de noviembre. Cuantos más escaños aciertes, más puntos. Esto es lo que tienes que hacer y cómo se puntúa.</p>
+    <p class="sec-sub">Adivina cuántos escaños sacará cada partido en cada provincia en las elecciones del 29 de noviembre. Cuantos más escaños aciertes, más puntos. Participar cuesta 5 €. Esto es lo que tienes que hacer y cómo se puntúa.</p>
 
     <h3 class="part">Qué tienes que hacer</h3>
     <ol class="steps">
@@ -378,6 +380,7 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
       <li><div><b>Reparte los escaños</b> en la pestaña <button type="button" class="linkbtn" data-goto="prov">Porra por provincias</button>. Hay 52 circunscripciones (50 provincias, Ceuta y Melilla). En cada una reparte sus escaños entre los partidos que se presentan allí, con los botones + y − o escribiendo el número. La suma nunca puede pasar del total de la provincia, y lo que no sea de ningún partido de la lista va a “Otros”. Cuando una provincia queda completa se marca en verde. Si dejas alguna sin rellenar, puntuará cero. Cada provincia trae unas pistas (resultados de 2023, estimación de las encuestas) y un botón para partir de los resultados de 2023 o de las encuestas y ajustar desde ahí. Verás tu mapa al lado según rellenas, y puedes pulsar una provincia del mapa para ir a ella.</div></li>
       <li><div><b>Revisa tu porra.</b> En <button type="button" class="linkbtn" data-goto="res">Resumen</button> ves tus totales comparados con 2023, la tabla provincia a provincia y un mapa con el partido que gana en cada provincia según tus números.</div></li>
       <li id="step-send"><div><b>Envíala.</b> En la pestaña <button type="button" class="linkbtn" data-goto="send">Enviar</button> pulsa “Descargar mi porra”: se guarda un archivo con tu nombre. Mándalo como adjunto por correo a <span data-mail></span>. Si la descarga no funciona en tu móvil, pulsa “Copiar como texto” y pega el texto en el cuerpo del correo.</div></li>
+      <li><div><b>Confirma con un Bizum de 5 €.</b> Una vez enviada tu porra, haz un Bizum de 5 € al número que te hemos pasado en el mensaje de difusión para confirmar tu participación. En el concepto, pon <b>«Macroporra - »</b> y el mismo nombre con el que has rellenado la porra.</div></li>
     </ol>
     <p class="how-note">¿Quieres informarte antes de rellenar? En <button type="button" class="linkbtn" data-goto="part">Partidos y programas</button> tienes los enlaces oficiales de cada partido y las listas oficiales de candidatos.</p>
     <p class="how-note">Tu porra se guarda sola en este navegador, así que puedes cerrar la página y seguir más tarde. Envíala antes de que abran las urnas: el domingo 29 de noviembre a las 9:00.</p>
@@ -480,6 +483,13 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
         <p>Pulsa el botón y tu porra queda registrada al instante, con tu nombre y la hora. Puedes volver a enviarla las veces que quieras hasta el cierre: cuenta la última. Solo se guardan tu nombre y tus escaños, y solo los ve quien organiza la porra.</p>
         <div class="actions"><button class="btn primary" id="b-send">Enviar mi porra</button></div>
         <div class="msg" id="direct-msg" role="status"></div>
+      </div>
+      <div class="card" id="pay-card">
+        <h3>Confirma tu participación con un Bizum</h3>
+        <p>Después de enviar tu porra, haz un Bizum de <b>5 €</b> al número que te hemos pasado en el mensaje de difusión. En el concepto, escribe:</p>
+        <div class="concept"><code id="pay-concept">Macroporra - tu nombre</code><button type="button" class="btn" id="b-copy-concept">Copiar</button></div>
+        <p style="margin-top:10px">Usa el mismo nombre con el que has rellenado la porra, para que se pueda identificar tu pago.</p>
+        <div class="msg" id="pay-msg" role="status"></div>
       </div>
       <div class="card">
         <h3 id="dl-title">Descargar</h3>
@@ -1404,7 +1414,7 @@ function exportObj() {
 function slug(s0) { return (s0 || "porra").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "porra"; }
 function renderSend() {
   var c = counts(), box = $("send-status"), chips = $("send-chips");
-  box.textContent = ""; chips.textContent = ""; renderSentInfo(box);
+  box.textContent = ""; chips.textContent = ""; renderSentInfo(box); updatePayConcept();
   var inc = ORDER.filter(function (k) { return total(k) < PROV[k].s; });
   if (!state.name.trim()) box.appendChild(el("p", { class: "msg warn", text: "Escribe tu nombre arriba para que podamos identificar tu porra." }));
   if (inc.length === 0) box.appendChild(el("p", { class: "msg ok", text: "Todo listo: las 52 provincias están completas (350 escaños)." }));
@@ -1430,7 +1440,7 @@ function renderSentInfo(box) {
   var changed = s.sig !== picksSig();
   box.appendChild(el("p", { class: "msg " + (changed ? "warn" : "ok"), text: changed
     ? "Has cambiado cosas desde tu último envío (" + fmtHora(s.at) + "). Vuelve a pulsar «Enviar mi porra» para que cuente la nueva versión."
-    : "Enviada el " + fmtHora(s.at) + ". Recibo: " + s.recibo + "." }));
+    : "Enviada el " + fmtHora(s.at) + ". Recibo: " + s.recibo + ". Si aún no lo has hecho, haz el Bizum de 5 € (concepto «" + payConcept() + "»)." }));
 }
 var ERR_TXT = { cerrado: "El plazo de envío ha terminado.", clave: "El envío ha sido rechazado (clave incorrecta).", formato: "El envío ha sido rechazado porque el formato no es válido.", topes: "El envío ha sido rechazado: alguna provincia tiene más escaños que su total.", interno: "El servidor ha tenido un problema." };
 function sendDirect() {
@@ -1447,7 +1457,7 @@ function sendDirect() {
       clearTimeout(to); btn.disabled = false;
       if (j && j.ok) {
         setSent({ at: j.hora || new Date().toISOString(), recibo: j.recibo, sig: picksSig() });
-        setMsg("direct-msg", "¡Enviada! Tu recibo es " + j.recibo + ". Guárdalo por si hay que comprobar algo." + (inc ? " Ojo: te faltan " + plural(inc, "provincia", "provincias") + " por completar; puedes volver a enviarla cuando las rellenes." : ""), inc ? "warn" : "ok");
+        setMsg("direct-msg", "¡Enviada! Tu recibo es " + j.recibo + ". Último paso: haz un Bizum de 5 € al número del mensaje de difusión, con el concepto «" + payConcept() + "»." + (inc ? " Ojo: te faltan " + plural(inc, "provincia", "provincias") + " por completar; puedes volver a enviarla cuando las rellenes." : ""), inc ? "warn" : "ok");
         renderSend();
       } else {
         setMsg("direct-msg", (ERR_TXT[j && j.error] || "El envío no se ha podido registrar.") + " Prueba otra vez o usa la descarga de más abajo y manda el archivo por correo.", "warn");
@@ -1466,6 +1476,13 @@ function applyEnvio() {
   $("send-sub").innerHTML = "Pulsa «Enviar mi porra» y quedará registrada al instante. Si algo falla, puedes descargar el archivo y mandarlo por correo a <span data-mail></span> antes de que abran las urnas (domingo 29 de noviembre, 9:00). <button type=\"button\" class=\"linkbtn\" data-goto=\"how\">Repasa cómo funciona</button>";
   $("step-send").innerHTML = "<div><b>Envíala.</b> En la pestaña <button type=\"button\" class=\"linkbtn\" data-goto=\"send\">Enviar</button> pulsa «Enviar mi porra»: queda registrada al instante, con tu nombre y la hora. Puedes volver a enviarla hasta el cierre y cuenta la última. Si algo falla, descarga el archivo y mándalo por correo a <span data-mail></span>.</div>";
 }
+function payConcept() { return "Macroporra - " + (state.name.trim() || "tu nombre"); }
+function updatePayConcept() { var e = $("pay-concept"); if (e) e.textContent = payConcept(); }
+$("b-copy-concept").addEventListener("click", function () {
+  var txt = payConcept();
+  try { navigator.clipboard.writeText(txt).then(function () { setMsg("pay-msg", "Copiado: " + txt, "ok"); }, function () { setMsg("pay-msg", "No se ha podido copiar. Selecciona el texto y cópialo a mano.", "warn"); }); }
+  catch (e) { setMsg("pay-msg", "No se ha podido copiar. Selecciona el texto y cópialo a mano.", "warn"); }
+});
 function setMsg(id, text, kind) { var m = $(id); m.textContent = text; m.className = "msg" + (kind ? " " + kind : ""); }
 var dl = null;
 var standalone = !(window.claude && window.claude.use);
@@ -1531,13 +1548,14 @@ $("b-reset").addEventListener("click", function () {
   save(); renderMeter(); buildEditor(state.cur); updateRail(); renderSend();
   setMsg("load-msg", "Porra reiniciada.", "ok");
 });
-$("name").addEventListener("input", function (e) { state.name = e.target.value; save(); });
+$("name").addEventListener("input", function (e) { state.name = e.target.value; save(); updatePayConcept(); });
 
 /* ───────── Arranque ───────── */
 load();
 applyEnvio();
 applyEmail();
 $("name").value = state.name;
+updatePayConcept();
 renderScore();
 buildRail(); buildMap(); buildMini(); selectProvince(state.cur); renderMeter();
 if (window.claude && window.claude.use) {
