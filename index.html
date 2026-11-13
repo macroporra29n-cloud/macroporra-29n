@@ -336,6 +336,38 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
 .linkbtn { background: none; border: 0; padding: 0; text-decoration: underline; color: var(--muted); font-size: 14px; }
 @media (max-width: 380px) { table.sc td.n, table.sc th.n { white-space: normal; } table.sc th.n + th.n, table.sc td.n + td.n { padding-left: 6px; } table.sc { font-size: 14px; } .rule { padding: 14px 12px; } .stepper input { width: 48px; } .stepper button { width: 40px; } .row { gap: 8px; } .editor { padding: 14px 12px; } }
 @media (max-width: 480px) { table.sc.cmp td, table.sc.cmp th { padding: 8px 6px; } table.sc.cmp td.n, table.sc.cmp th.n { padding-right: 8px; } table.sc.cmp td:first-child, table.sc.cmp th:first-child { padding-left: 10px; } table.sc.cmp tr.child td:first-child { padding-left: 24px; } table.sc.cmp .sub { margin-left: 20px; } }
+/* Clasificación */
+.rk-top { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 0 0 16px; }
+.rk-top .msg { margin-top: 0; }
+.rk-estado { margin: 0 0 18px; }
+.rk-wrap { max-width: 900px; }
+table.rk { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 15px; }
+.rk th, .rk td { padding: 9px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
+.rk th { font-size: 13px; color: var(--muted); font-weight: 700; border-bottom: 1.5px solid var(--ink); vertical-align: bottom; }
+.rk th.nm, .rk td.nm { text-align: left; white-space: normal; width: 100%; overflow-wrap: anywhere; }
+.rk th.pos, .rk td.pos { text-align: left; padding-left: 14px; }
+.rk td.pos { font-weight: 800; }
+.rk td.tt { font-weight: 900; font-size: 18px; padding-right: 14px; }
+.rk th.tt { padding-right: 14px; }
+.rk tbody tr:last-child td { border-bottom: 0; }
+.rk tr.me td { background: color-mix(in srgb, var(--focus) 13%, var(--surface)); }
+.rk tr.me td.nm::after { content: " (tú)"; color: var(--muted); font-weight: 600; }
+.rk tr.det { display: none; }
+.rk tr.det td { text-align: left; white-space: normal; color: var(--muted); font-size: 14px; padding: 4px 14px 12px; }
+.rk tr.det td b { color: var(--ink); }
+.rk-hint { display: none; color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+@media (max-width: 640px) {
+  .rk .dz { display: none; }
+  .rk tr.r { cursor: pointer; }
+  .rk tr.r.open td { border-bottom: 0; }
+  .rk tr.r.open + tr.det { display: table-row; }
+  .rk-hint { display: block; }
+}
+.rk-list { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); max-width: 900px; }
+.rk-list li { background: var(--surface); border: 1.5px solid var(--rule); border-radius: 6px; padding: 9px 12px; font-weight: 600; overflow-wrap: anywhere; min-width: 0; }
+.rk-list li.me { border-color: var(--ink); }
+.rk-list li.me::after { content: " (tú)"; color: var(--muted); }
+.rk-n { font-weight: 800; margin: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -365,6 +397,7 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
     <button role="tab" id="t-prov" aria-selected="false" aria-controls="p-prov" data-tab="prov">Porra por provincias</button>
     <button role="tab" id="t-res" aria-selected="false" aria-controls="p-res" data-tab="res">Resumen</button>
     <button role="tab" id="t-send" aria-selected="false" aria-controls="p-send" data-tab="send">Enviar</button>
+    <button role="tab" id="t-rank" aria-selected="false" aria-controls="p-rank" data-tab="rank">Clasificación</button>
   </div>
 </nav>
 
@@ -515,6 +548,15 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
       </div>
       <div><button class="linkbtn" id="b-reset">Empezar de cero</button></div>
     </div>
+  </section>
+
+  <!-- CLASIFICACIÓN -->
+  <section class="panel" id="p-rank" role="tabpanel" aria-labelledby="t-rank" hidden>
+    <h2 class="sec-title">Clasificación</h2>
+    <p class="sec-sub">Puntos de cada participante con su último envío, según las reglas de <button type="button" class="linkbtn" data-goto="how">Cómo se puntúa</button>. Solo aparecen las porras confirmadas con el Bizum.</p>
+    <div class="rk-top"><button type="button" class="btn primary" id="b-rank">Actualizar clasificación</button><div class="msg" id="rk-msg" role="status"></div></div>
+    <div class="aviso rk-estado" id="rk-estado" hidden></div>
+    <div id="rk-body"></div>
   </section>
 </main>
 
@@ -735,7 +777,7 @@ function renderMeter() {
 }
 
 /* ───────── Pestañas ───────── */
-var tabs = ["how", "part", "prov", "res", "send"];
+var tabs = ["how", "part", "prov", "res", "send", "rank"];
 function showTab(t) {
   tabs.forEach(function (k) {
     $("p-" + k).hidden = (k !== t);
@@ -744,6 +786,7 @@ function showTab(t) {
   if (t === "part") renderPartidos();
   if (t === "res") { renderSummary(); updateMap(); showSide(pinned || state.cur, true); }
   if (t === "send") renderSend();
+  if (t === "rank") loadRank(false);
   window.scrollTo(0, 0);
 }
 tabs.forEach(function (k) { $("t-" + k).addEventListener("click", function () { showTab(k); }); });
@@ -1387,7 +1430,7 @@ function renderScore() {
     '<tr><td>3 a 5</td><td class="n"><b>5</b></td></tr><tr><td>6 a 10</td><td class="n"><b>2</b></td></tr>' +
     '<tr><td>Más de 10</td><td class="n"><b>0</b></td></tr></tbody></table>' +
     '<div class="ex"><b>Ejemplo:</b> tu porra suma 64 escaños para Vox y salen 66. Te equivocas por 2, así que ganas 9 puntos.</div>' +
-    '<p style="margin-top:10px">El Frente Amplio cuenta con todas sus marcas locales (Comuns, CHA, Ara MÉS…). UPN-PP cuenta aparte, no se suma al PP. Estos puntos se calculan solos a partir de tus provincias; puedes ir viendo tu total en la pestaña Resumen.</p></div>' +
+    '<p style="margin-top:10px">Acertar un 0 no puntúa: si alguno de estos partidos se queda sin escaños en toda España, su total no da puntos a nadie. El Frente Amplio cuenta con todas sus marcas locales (Comuns, CHA, Ara MÉS…). UPN-PP cuenta aparte, no se suma al PP. Estos puntos se calculan solos a partir de tus provincias; puedes ir viendo tu total en la pestaña Resumen.</p></div>' +
 
   '<div class="rule"><h3>Partido más votado de España<span class="pts">+5</span></h3>' +
     '<p>Cinco puntos si el partido con más escaños en tu resumen nacional es también el que más escaños saca en la realidad. Un empate en cabeza se trata igual que en las provincias.</p></div>' +
@@ -1549,6 +1592,88 @@ $("b-reset").addEventListener("click", function () {
   setMsg("load-msg", "Porra reiniciada.", "ok");
 });
 $("name").addEventListener("input", function (e) { state.name = e.target.value; save(); updatePayConcept(); });
+
+/* ───────── Clasificación ───────── */
+var rankLoaded = false, rankBusy = false;
+function claveNom(n) { return String(n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); }
+function fmtPts(x) { return String(Math.round((Number(x) || 0) * 100) / 100).replace(".", ","); }
+function fmtFecha(v) {
+  if (!v) return "";
+  var d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  return d.toLocaleString("es-ES", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+}
+function loadRank(force) {
+  if (!ENDPOINT) { setMsg("rk-msg", "La clasificación no está disponible en esta copia de la página.", "warn"); return; }
+  if ((rankLoaded && !force) || rankBusy) return;
+  rankBusy = true;
+  var b = $("b-rank"); b.disabled = true;
+  setMsg("rk-msg", "Cargando clasificación…", "");
+  var ctl = ("AbortController" in window) ? new AbortController() : null;
+  var to = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);
+  fetch(ENDPOINT + (ENDPOINT.indexOf("?") < 0 ? "?" : "&") + "accion=clasificacion&t=" + Date.now(), { signal: ctl ? ctl.signal : undefined })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j || !j.ok) throw new Error("respuesta");
+      rankLoaded = true;
+      renderRank(j);
+      setMsg("rk-msg", "Actualizada a las " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) + ".", "ok");
+    })
+    .catch(function () { setMsg("rk-msg", "No se ha podido cargar la clasificación. Prueba otra vez en unos minutos.", "warn"); })
+    .then(function () { clearTimeout(to); rankBusy = false; b.disabled = false; });
+}
+function renderRank(j) {
+  var est = $("rk-estado"), body = $("rk-body"), yo = claveNom(state.name);
+  est.textContent = ""; body.textContent = ""; est.hidden = false;
+  if (j.estado === "Provisional") {
+    est.appendChild(el("b", { text: "Clasificación provisional" }));
+    var extra = [];
+    if (j.escrutado !== null && j.escrutado !== undefined && j.escrutado !== "") extra.push(fmtPts(j.escrutado) + " % escrutado");
+    if (j.actualizado) extra.push("datos de " + fmtFecha(j.actualizado));
+    est.appendChild(document.createTextNode((extra.length ? " · " + extra.join(" · ") : "") + ". Calculada con el recuento provisional del Ministerio del Interior. La definitiva llegará tras el escrutinio general."));
+  } else if (j.estado === "Definitivo") {
+    est.appendChild(el("b", { text: "Clasificación definitiva" }));
+    est.appendChild(document.createTextNode(", con el resultado oficial del escrutinio general" + (j.actualizado ? " (" + fmtFecha(j.actualizado) + ")" : "") + "."));
+  } else {
+    est.appendChild(el("b", { text: "Todavía no hay resultados." }));
+    est.appendChild(document.createTextNode(" Los puntos empezarán a calcularse la noche del 29 de noviembre, con el recuento del Ministerio del Interior."));
+    var lista = j.participantes || [];
+    body.appendChild(el("p", { class: "rk-n", text: lista.length === 0 ? "Aún no hay participantes confirmados." : plural(lista.length, "participante confirmado", "participantes confirmados") }));
+    if (lista.length) {
+      body.appendChild(el("ul", { class: "rk-list" }, lista.map(function (n) { return el("li", { class: claveNom(n) === yo && yo ? "me" : "", text: n }); })));
+    }
+    return;
+  }
+  var filas = j.filas || [];
+  if (!filas.length) { body.appendChild(el("p", { class: "rk-n", text: "Aún no hay participantes confirmados." })); return; }
+  var cols = [["pos", "Pos.", ""], ["nm", "Participante", ""], ["tt", "Total", ""], ["dz", "Escaños", "escanos"], ["dz", "Clavadas", "clavadas"], ["dz", "Ganadores", "ganador"], ["dz", "Totales España", "nacional"], ["dz", "Más votado", "masVotado"]];
+  var hr = el("tr", {}, cols.map(function (c) { return el("th", { class: c[0], text: c[1], scope: "col" }); }));
+  var tb = el("tbody");
+  filas.forEach(function (f) {
+    var me = yo && claveNom(f.nombre) === yo;
+    var tr = el("tr", { class: "r" + (me ? " me" : "") }, [
+      el("td", { class: "pos num", text: String(f.pos) }),
+      el("td", { class: "nm", text: f.nombre }),
+      el("td", { class: "tt num", text: fmtPts(f.total) }),
+      el("td", { class: "dz num", text: fmtPts(f.escanos) }),
+      el("td", { class: "dz num", text: fmtPts(f.clavadas) }),
+      el("td", { class: "dz num", text: fmtPts(f.ganador) }),
+      el("td", { class: "dz num", text: fmtPts(f.nacional) }),
+      el("td", { class: "dz num", text: fmtPts(f.masVotado) })
+    ]);
+    var det = el("tr", { class: "det" + (me ? " me" : "") }, [el("td", { colspan: "3" }, [
+      "Escaños ", el("b", { text: fmtPts(f.escanos) }), " · Clavadas ", el("b", { text: fmtPts(f.clavadas) }),
+      " · Ganadores ", el("b", { text: fmtPts(f.ganador) }), " · Totales España ", el("b", { text: fmtPts(f.nacional) }),
+      " · Más votado ", el("b", { text: fmtPts(f.masVotado) })
+    ])]);
+    tr.addEventListener("click", function () { tr.classList.toggle("open"); });
+    tb.appendChild(tr); tb.appendChild(det);
+  });
+  body.appendChild(el("p", { class: "rk-n", text: plural(filas.length, "participante", "participantes") }));
+  body.appendChild(el("div", { class: "tablewrap rk-wrap", style: "margin-top:10px" }, [el("table", { class: "rk" }, [el("thead", {}, [hr]), tb])]));
+  body.appendChild(el("p", { class: "rk-hint", text: "Pulsa en un participante para ver el desglose de sus puntos." }));
+}
+$("b-rank").addEventListener("click", function () { loadRank(true); });
 
 /* ───────── Arranque ───────── */
 load();
