@@ -439,7 +439,7 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
   <!-- CÓMO FUNCIONA -->
   <section class="panel" id="p-how" role="tabpanel" aria-labelledby="t-how">
     <h2 class="sec-title">Cómo funciona</h2>
-    <p class="sec-sub">Adivina cuántos escaños sacará cada partido en cada provincia en las elecciones del 29 de noviembre. Cuantos más escaños aciertes, más puntos. Participar cuesta 5 €. Esto es lo que tienes que hacer y cómo se puntúa.</p>
+    <p class="sec-sub">Participar cuesta 5 €. Esto es lo que tienes que hacer y cómo se puntúa.</p>
 
     <h3 class="part">Qué tienes que hacer</h3>
     <ol class="steps">
@@ -447,14 +447,12 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
       <li><div><b>Reparte los escaños</b> en la pestaña <button type="button" class="linkbtn" data-goto="prov">Porra por provincias</button>. Hay 52 circunscripciones (50 provincias, Ceuta y Melilla). En cada una reparte sus escaños entre los partidos que se presentan allí, con los botones + y − o escribiendo el número. La suma nunca puede pasar del total de la provincia, y lo que no sea de ningún partido de la lista va a “Otros”. Cuando una provincia queda completa se marca en verde. Si dejas alguna sin rellenar, puntuará cero. Cada provincia trae unas pistas (resultados de 2023, estimación de las encuestas) y un botón para partir de los resultados de 2023 o de las encuestas y ajustar desde ahí. Verás tu mapa al lado según rellenas, y puedes pulsar una provincia del mapa para ir a ella.</div></li>
       <li><div><b>Revisa tu porra.</b> En <button type="button" class="linkbtn" data-goto="res">Resumen</button> ves tus totales comparados con 2023, la tabla provincia a provincia y un mapa con el partido que gana en cada provincia según tus números.</div></li>
       <li id="step-send"><div><b>Envíala.</b> En la pestaña <button type="button" class="linkbtn" data-goto="send">Enviar</button> pulsa “Descargar mi porra”: se guarda un archivo con tu nombre. Mándalo como adjunto por correo a <span data-mail></span>. Si la descarga no funciona en tu móvil, pulsa “Copiar como texto” y pega el texto en el cuerpo del correo.</div></li>
-      <li><div><b>Confirma con un Bizum de 5 €.</b> Una vez enviada tu porra, haz un Bizum de 5 € al número que te hemos pasado en el mensaje de difusión para confirmar tu participación. En el concepto, pon <b>«Macroporra - »</b> y el mismo nombre con el que has rellenado la porra.</div></li>
+      <li><div><b>Confirma con un Bizum de 5 €</b> al número del mensaje de difusión. El concepto exacto lo tienes en <button type="button" class="linkbtn" data-goto="send">Enviar</button>.</div></li>
     </ol>
     <p class="how-note">¿Quieres informarte antes de rellenar? En <button type="button" class="linkbtn" data-goto="part">Partidos y programas</button> tienes los enlaces oficiales de cada partido y las listas oficiales de candidatos.</p>
-    <p class="how-note">Tu porra se guarda sola en este navegador, así que puedes cerrar la página y seguir más tarde. Envíala antes de que abran las urnas: el domingo 29 de noviembre a las 9:00.</p>
     <p><button type="button" class="btn primary" data-goto="prov">Empezar a rellenar</button></p>
 
     <h3 class="part">Cómo se puntúa</h3>
-    <p class="sec-sub">Sumas puntos por cada escaño que aciertes, y bonus por clavar provincias enteras y por acertar los totales de España. Gana quien más puntos tenga cuando se cierre el recuento.</p>
     <div class="rules" id="score-body"></div>
   </section>
 
@@ -478,8 +476,7 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
   <section class="panel" id="p-prov" role="tabpanel" aria-labelledby="t-prov" hidden>
     <details class="help" id="help">
       <summary>Ayuda</summary>
-      <p class="intro">Elige una provincia y reparte sus escaños entre los partidos que se presentan. La suma no puede pasar del total de la provincia. Lo que no sea de ningún partido de la lista va a “Otros”.</p>
-      <p class="note-v1">Los partidos de cada provincia son los de las candidaturas proclamadas en el BOE del 3 de noviembre (los principales; cualquier otra lista cuenta como “Otros”). En cada provincia verás unas pistas, y botones para partir de los resultados de 2023 o de las encuestas .</p>
+      <p class="note-v1">Los partidos de cada provincia son los de las candidaturas proclamadas en el BOE del 3 de noviembre (los principales; cualquier otra lista cuenta como “Otros”).</p>
       <p class="intro"><button type="button" class="linkbtn" data-goto="how">Ver cómo funciona y cómo se puntúa</button></p>
     </details>
     <details class="polls" id="polls">
@@ -494,6 +491,7 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
       </tbody></table>
       <p class="intro" style="margin-top:10px"><b>El CIS, el instituto público, da un escenario distinto.</b> Su barómetro de octubre estima el voto en PSOE 34,0 %, PP 22,2 % y Vox 17,1 %. El CIS no publica escaños y sus cifras se alejan mucho de las del resto de encuestas, así que conviene leerlo con cautela y compararlo con ellas.</p>
       <p class="intro"><b>Por provincias.</b> En su encuesta más reciente (trabajo de campo del 29 y 30 de octubre, publicada el 2 de noviembre), Sigma Dos ve al PP como primera fuerza en solitario en hasta 36 provincias. Al PSOE le da la victoria casi segura solo en Barcelona y Tarragona, con opción en Girona, y estima que Vox podría igualar o superar al PSOE en 29 provincias. En cada provincia verás su estimación de octubre. Fuente: <a href="https://elliberal.cat/2026/11/03/encuesta-elecciones-29n-cataluna-ultimo-bastion-psoe-sanchez" target="_blank" rel="noopener noreferrer">El Liberal</a>, sobre la encuesta de El Mundo.</p>
+      <p class="intro">La estimación por provincia que verás en cada pista es la de su encuesta de octubre: una muestra nacional de 3.007 entrevistas (del 1 al 14 de octubre, antes del cierre de coaliciones), así que es muy orientativa. Los rangos indican la incertidumbre del propio instituto. <a href="https://www.sigmados.com/noticia?id=rivzEnwHgHaatUC" target="_blank" rel="noopener noreferrer">Mapa provincial completo en Sigma Dos</a>.</p>
       <p class="intro">Las encuestas no se pueden publicar del 24 al 28 de noviembre. Una encuesta es una foto de un momento, no un resultado: en 2023 las encuestas sobrestimaron al PP.</p>
     </details>
     <div class="layout">
@@ -547,7 +545,7 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
       </div>
       <div class="card" id="direct" hidden>
         <h3>Enviar mi porra</h3>
-        <p>Pulsa el botón y tu porra queda registrada al instante, con tu nombre y la hora. Puedes volver a enviarla las veces que quieras hasta el cierre: cuenta la última. Solo se guardan tu nombre y tus escaños, y solo los ve quien organiza la porra.</p>
+        <p>Queda registrada al instante, con tu nombre y la hora. Puedes reenviarla hasta el cierre: cuenta la última. Las porras confirmadas con el Bizum se ven en la pestaña Clasificación.</p>
         <div class="actions"><button class="btn primary" id="b-send">Enviar mi porra</button></div>
         <div class="msg" id="direct-msg" role="status"></div>
       </div>
@@ -602,7 +600,7 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
 /* ── Correo al que se envían las porras. Cambia solo esta línea cuando lo tengas. ── */
 var EMAIL = "macroporra29n@gmail.com";
 /* ── Programas del 29-N. Cuando un partido publique el suyo, añade  p29: "https://…"  (enlace directo) o  pub: "48 páginas."  (si aún no tienes el enlace) a su ficha (PINFO o PTERR, más abajo). Actualiza también esta fecha. ── */
-var PROGRAMAS_AL = "13 de noviembre";
+var PROGRAMAS_AL = "23 de noviembre";
 /* ── Envío directo (opcional). Pega aquí la URL de tu Google Apps Script (acaba en /exec). Si está vacía, solo se ofrece descargar el archivo. ── */
 var ENDPOINT = "https://script.google.com/macros/s/AKfycbzFNRmfSFXz8ApU5AxD2ZHfc0vOzSZqFOs_Sc6gHAT9VcYBG6AMmUiTf--L3gG31fM5/exec";
 var CLAVE = "";   /* opcional: la misma clave que pongas en el script */
@@ -1293,10 +1291,8 @@ function hintsFor(c) {
       el("thead", {}, [el("tr", {}, [el("th", { text: "Encuesta de octubre (Sigma Dos)" }), el("th", { class: "n", text: "Escaños" })])]),
       pb
     ]));
-    d.appendChild(el("p", { class: "src", text: "Estimación para esta provincia a partir de una muestra nacional de 3.007 entrevistas (del 1 al 14 de octubre, antes del cierre de coaliciones). Con tan pocas entrevistas por provincia, es muy orientativa. Los rangos indican la incertidumbre del propio instituto." }));
     if (c === "03") d.appendChild(el("p", { class: "src", text: "*En Alicante el Frente Amplio no concurre con su marca: sus partidos van dentro de Compromís-Front Valencià." }));
     if (!PL.ok) d.appendChild(el("p", { class: "src", text: "Las cifras publicadas suman más de los " + P.s + " escaños que elige esta provincia este año: úsalas solo como orden de fuerza." }));
-    d.appendChild(el("p", { class: "src" }, [el("a", { href: "https://www.sigmados.com/noticia?id=rivzEnwHgHaatUC", target: "_blank", rel: "noopener noreferrer", text: "Ver el mapa provincial completo en Sigma Dos" }), "."]));
   }
   var ul = el("ul", { class: "hl" });
   if (P.s !== H.s) ul.appendChild(el("li", { text: "Este año la provincia elige " + P.s + " escaños; en 2023 eligió " + H.s + "." }));
@@ -1327,33 +1323,33 @@ var PINFO = [
     p29: "https://www.pp.es/wp-content/uploads/2026/11/LA-RECONSTRUCCION-NACIONAL.pdf", pub: "«La Reconstrucción Nacional», presentado el 10 de noviembre (82 páginas, 249 medidas).",
     nota: "Antes, el 19 de octubre, había presentado el manifiesto «Contrato con España»." },
   { id: "psoe", name: "Partido Socialista Obrero Español (PSOE)", scope: "Toda España; en Cataluña, con el PSC", who: "Pedro Sánchez (Madrid)",
-    web: "https://www.psoe.es/", prog: { l: "Programa de 2023", u: "https://www.psoe.es/media-content/2023/07/PROGRAMA_ELECTORAL-GENERALES-2023.pdf" } },
+    web: "https://www.psoe.es/", prog: { l: "Programa de 2023", u: "https://www.psoe.es/media-content/2023/07/PROGRAMA_ELECTORAL-GENERALES-2023.pdf" },
+    p29: "https://www.psoe.es/media-content/2026/11/PROGRAMAPSOE29N26.pdf", pub: "«La fuerza de seguir avanzando»." },
   { id: "vox", name: "Vox", scope: "Toda España", who: "Santiago Abascal (Madrid)",
     web: "https://www.voxespana.es/",
     p29: "https://www.voxespana.es/wp-content/uploads/2026/11/Programa-completo-A5-1.pdf", pub: "«Es sentido común», 115 propuestas en 13 bloques temáticos (63 páginas en formato A5)." },
   { id: "fa", name: "Frente Amplio", scope: "Coalición de IU, Movimiento Sumar, Comuns, Más Madrid, Chunta Aragonesista y otros, sin Podemos. No concurre en Canarias, Comunitat Valenciana, Ceuta, Melilla ni Teruel",
     who: "Ada Colau (Barcelona); Emilio Delgado (Madrid)",
-    web: "https://movimientosumar.es/", extra: [{ l: "Web de Izquierda Unida", u: "https://www.izquierda-unida.es/" }, { l: "Web de Más Madrid", u: "https://www.masmadrid.org/" }],
-    prog: { l: "Programa de Sumar en 2023 (la candidatura anterior)", u: "https://movimientosumar.es/wp-content/uploads/2023/07/Un-Programa-para-ti.pdf" },
-    nota: "Es una coalición nueva y aún no tiene web propia verificada; se enlazan las de sus partidos." },
+    web: "https://frenteamplio.info/", extra: [{ l: "Programa por temas en su web", u: "https://frenteamplio.info/programa/" }],
+    p29: "https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf" },
   { id: "podemos", name: "Podemos", scope: "41 provincias, por separado del Frente Amplio. En Cataluña respalda a ERC; en la Comunitat Valenciana y Canarias va dentro de otras coaliciones", who: "Irene Montero (Madrid)",
-    web: "https://podemos.info/" },
+    web: "https://podemos.info/", pub: "Presentado en campaña. No hemos encontrado el enlace en su web oficial." },
   { id: "salf", name: "Se Acabó La Fiesta (SALF)", scope: "46 provincias", who: "Alvise Pérez (Madrid)" },
   { id: "d21", name: "Democracia 21 («Democracia para el siglo 21»)", scope: "Solo Madrid y Barcelona, en coalición con Ciudadanos y UCIN. Partido nuevo, fundado en 2026", who: "Miriam González Durántez (Madrid)",
     web: "https://democracia21.es/",
-    extra: [{ l: "Propuesta publicada: Limpieza política radical", u: "https://democracia21.es/limpieza-politica-radical" }, { l: "Propuesta publicada: Vivienda, Prioridad Nº1", u: "https://democracia21.es/vivienda-prioridad-1" }],
-    nota: "De momento solo ha publicado dos propuestas temáticas en su web y anuncia que irá añadiendo más. No tiene programa completo." }
+    extra: [{ l: "Programa del 29-N en su web", u: "https://mi.democracia21.es/programa" }],
+    pub: "Publicado en su web, en 32 temas. Sin versión en PDF." }
 ];
 var PTERR = [
-  { id: "adelante", name: "Adelante Andalucía", scope: "Andalucía (8 provincias)", who: "Sin candidato único: cada lista tiene su cabeza", web: "https://adelanteandalucia.org/" },
-  { id: "bng", name: "Bloque Nacionalista Galego (BNG)", scope: "Galicia", who: "Néstor Rego (A Coruña)", web: "https://www.bng.gal/", pub: "91 páginas." },
-  { id: "cca", name: "Coalición Canaria-Primero Canarias", scope: "Canarias", who: "Cristina Valido (Santa Cruz de Tenerife)", web: "https://coalicioncanaria.org/", pub: "23 páginas." },
+  { id: "adelante", name: "Adelante Andalucía", scope: "Andalucía (8 provincias)", who: "Sin candidato único: cada lista tiene su cabeza", web: "https://adelanteandalucia.org/", p29: "https://programa.adelanteandalucia.org/programa-29n-adelante-andalucia.pdf", pub: "29 medidas principales y 719 propuestas." },
+  { id: "bng", name: "Bloque Nacionalista Galego (BNG)", scope: "Galicia", who: "Néstor Rego (A Coruña)", web: "https://www.bng.gal/", p29: "https://www.bng.gal/media/bnggaliza/files/2026/11/03/26_bng_xerais_documentos_programa_electoral.pdf", pub: "En gallego." },
+  { id: "cca", name: "Coalición Canaria-Primero Canarias", scope: "Canarias", who: "Cristina Valido (Santa Cruz de Tenerife)", web: "https://coalicioncanaria.org/", pub: "23 páginas, en su web oficial." },
   { id: "compromis", name: "Compromís-Front Valencià", scope: "Comunitat Valenciana. Coalición de Més, Iniciativa, Verds Equo, Podemos, EUPV y otros", who: "Àgueda Micó (València)", web: "https://compromis.net/" },
   { id: "bildu", name: "EH Bildu", scope: "País Vasco y Navarra (en Navarra, «EH Bildu-ERC»)", who: "Oskar Matute (Bizkaia)", web: "https://ehbildu.eus/" },
-  { id: "erc", name: "Esquerra Republicana de Catalunya (ERC)", scope: "Cataluña. Podemos respalda su candidatura", who: "Gabriel Rufián (Barcelona)", web: "https://esquerrarepublicana.cat/", pub: "48 páginas." },
+  { id: "erc", name: "Esquerra Republicana de Catalunya (ERC)", scope: "Cataluña. Podemos respalda su candidatura", who: "Gabriel Rufián (Barcelona)", web: "https://esquerrarepublicana.cat/", p29: "https://www.esquerrarepublicana.cat/documents/e2026-programa.pdf", pub: "En catalán." },
   { id: "junts", name: "Junts per Catalunya", scope: "Cataluña", who: "Míriam Nogueras (Barcelona)", web: "https://www.junts.cat/" },
-  { id: "pnv", name: "Partido Nacionalista Vasco (PNV)", scope: "País Vasco", who: "Maribel Vaquero (Gipuzkoa)", web: "https://www.eaj-pnv.eus/", pub: "43 páginas." },
-  { id: "existe", name: "Teruel Existe (Coalición Existe)", scope: "Teruel", who: "Tomás Guitarte (Teruel)" },
+  { id: "pnv", name: "Partido Nacionalista Vasco (PNV)", scope: "País Vasco", who: "Maribel Vaquero (Gipuzkoa)", web: "https://www.eaj-pnv.eus/", p29: "https://www.eaj-pnv.eus/es/adjuntos-documentos/21765/pdf/programa-electoral-29n" },
+  { id: "existe", name: "Teruel Existe (Coalición Existe)", scope: "Teruel", who: "Tomás Guitarte (Teruel)", web: "https://teruelexiste.info/", p29: "https://teruelexiste.info/wp-content/uploads/2026/11/Programa_Teruel_Existe_Completo_29N.pdf", pub: "15 páginas." },
   { id: "upc", name: "Unidad del Pueblo Canario", scope: "Canarias. Coalición de Nueva Canarias-Bloque Canarista, Podemos, Movimiento Sumar e Izquierda Unida Canaria", who: "Luis Campos (Las Palmas)" }
 ];
 function linkLi(l, u) { return el("li", {}, [el("a", { href: u, target: "_blank", rel: "noopener noreferrer", text: l })]); }
@@ -1364,17 +1360,16 @@ function pcard(p) {
   d.appendChild(el("p", { class: "meta", text: p.scope }));
   d.appendChild(el("p", { class: "who", text: "Cabeza de lista principal: " + p.who }));
   var isPub = !!(p.p29 || p.pub);
-  d.appendChild(el("span", { class: "stat", text: isPub ? "Programa del 29-N: publicado" : "Programa del 29-N: aún no publicado" }));
+  d.appendChild(el("span", { class: "stat", text: isPub ? "Programa del 29-N: publicado" : "Programa del 29-N: sin enlace verificado" }));
   var ul = el("ul");
   if (p.p29) ul.appendChild(linkLi("Programa electoral del 29-N", p.p29));
   if (p.web) ul.appendChild(linkLi("Web oficial", p.web));
   (p.extra || []).forEach(function (x) { ul.appendChild(linkLi(x.l, x.u)); });
   if (p.prog && !isPub) ul.appendChild(linkLi("Último programa: " + p.prog.l, p.prog.u));
-  ul.appendChild(linkLi("Lista oficial de candidatos (BOE, 3 de noviembre)", BOE_PROCL));
   d.appendChild(ul);
-  if (p.pub) d.appendChild(el("p", { class: "nota", text: "Programa del 29-N publicado: " + p.pub + (p.p29 ? "" : " Consúltalo en la web oficial del partido.") }));
+  if (p.pub) d.appendChild(el("p", { class: "nota", text: p.pub }));
   if (p.nota) d.appendChild(el("p", { class: "nota", text: p.nota }));
-  if (!p.web) d.appendChild(el("p", { class: "nota", text: "Todavía no hemos verificado una web oficial para este partido; la lista de candidatos del BOE es la fuente oficial." }));
+  if (!p.web) d.appendChild(el("p", { class: "nota", text: "Sin web oficial verificada." }));
   return d;
 }
 function renderPartidos() {
@@ -1384,7 +1379,7 @@ function renderPartidos() {
   var todos = PINFO.concat(PTERR), nPub = todos.filter(function (p) { return p.p29 || p.pub; }).length;
   $("part-aviso").innerHTML = nPub === 0
     ? "<b>A " + PROGRAMAS_AL + ", ningún partido ha publicado todavía su programa para el 29-N.</b> Por eso cada ficha enlaza a la web oficial del partido y a su último programa completo (el de 2023, o el que haya publicado después). Cuando se publiquen los programas de esta campaña, se sustituirán estos enlaces."
-    : "<b>A " + PROGRAMAS_AL + ", " + nPub + " de " + todos.length + " partidos han publicado su programa para el 29-N</b> (están marcados abajo). En el resto enlazamos su web oficial y su último programa completo, y se irán actualizando.";
+    : "<b>A " + PROGRAMAS_AL + ", " + nPub + " de " + todos.length + " partidos tienen publicado su programa para el 29-N</b>. En el resto no hemos podido verificar un enlace oficial; se irán actualizando.";
   var o = $("part-oficial");
   o.appendChild(el("li", {}, [el("a", { href: BOE_PROCL, target: "_blank", rel: "noopener noreferrer", text: "Candidaturas proclamadas (BOE del 3 de noviembre de 2026)" }), el("span", { class: "src", text: "Todas las listas definitivas, con el nombre de cada candidato, por provincia." })]));
   o.appendChild(el("li", {}, [el("a", { href: BOE_PRES, target: "_blank", rel: "noopener noreferrer", text: "Candidaturas presentadas (BOE del 28 de octubre de 2026)" }), el("span", { class: "src", text: "Las listas presentadas antes de la proclamación; algunas cambiaron después." })]));
@@ -1446,7 +1441,7 @@ function renderScore() {
     '<tr><td>Te quedas corto</td><td class="n">5</td><td class="n">7</td><td class="n"><b>5</b></td></tr>' +
     '<tr><td>Te pasas</td><td class="n">5</td><td class="n">4</td><td class="n"><b>4</b></td></tr>' +
     '<tr><td>Aciertas</td><td class="n">5</td><td class="n">5</td><td class="n"><b>5</b></td></tr></tbody></table>' +
-    '<p style="margin-top:8px">“Otros” también cuenta como un partido más. Máximo: ' + TOTAL_SEATS + ' puntos, uno por cada escaño del Congreso.</p></div>' +
+    '<p style="margin-top:8px">“Otros” también cuenta como un partido más.</p></div>' +
 
   '<div class="rule"><h3>Provincia clavada<span class="pts">+1 a +6</span></h3>' +
     '<p>Si en una provincia aciertas <b>todos</b> los partidos (incluido “Otros”), ganas un bonus que crece con el tamaño de la provincia, porque cuanto más grande, más difícil. En las más pequeñas no hay bonus: clavarlas es fácil y ya te pagan los escaños y el ganador.</p>' +
@@ -1464,7 +1459,7 @@ function renderScore() {
     '<tr><td>3 a 5</td><td class="n"><b>5</b></td></tr><tr><td>6 a 10</td><td class="n"><b>2</b></td></tr>' +
     '<tr><td>Más de 10</td><td class="n"><b>0</b></td></tr></tbody></table>' +
     '<div class="ex"><b>Ejemplo:</b> tu porra suma 64 escaños para Vox y salen 66. Te equivocas por 2, así que ganas 9 puntos.</div>' +
-    '<p style="margin-top:10px">Acertar un 0 no puntúa: si alguno de estos partidos se queda sin escaños en toda España, su total no da puntos a nadie. El Frente Amplio cuenta con todas sus marcas locales (Comuns, CHA, Ara MÉS…). UPN-PP cuenta aparte, no se suma al PP. Estos puntos se calculan solos a partir de tus provincias; puedes ir viendo tu total en la pestaña Resumen.</p></div>' +
+    '<p style="margin-top:10px">Acertar un 0 no puntúa: si alguno de estos partidos se queda sin escaños en toda España, su total no da puntos a nadie. El Frente Amplio cuenta con todas sus marcas locales (Comuns, CHA, Ara MÉS…). UPN-PP cuenta aparte, no se suma al PP.</p></div>' +
 
   '<div class="rule"><h3>Partido más votado de España<span class="pts">+5</span></h3>' +
     '<p>Cinco puntos si el partido con más escaños en tu resumen nacional es también el que más escaños saca en la realidad. Un empate en cabeza se trata igual que en las provincias.</p></div>' +
@@ -1550,8 +1545,8 @@ function applyEnvio() {
   $("direct").hidden = false;
   $("b-send").addEventListener("click", sendDirect);
   $("dl-title").textContent = "Descargar (por si falla el envío)";
-  $("send-sub").innerHTML = "Pulsa «Enviar mi porra» y quedará registrada al instante. Si algo falla, puedes descargar el archivo y mandarlo por correo a <span data-mail></span> antes de que abran las urnas (domingo 29 de noviembre, 9:00). <button type=\"button\" class=\"linkbtn\" data-goto=\"how\">Repasa cómo funciona</button>";
-  $("step-send").innerHTML = "<div><b>Envíala.</b> En la pestaña <button type=\"button\" class=\"linkbtn\" data-goto=\"send\">Enviar</button> pulsa «Enviar mi porra»: queda registrada al instante, con tu nombre y la hora. Puedes volver a enviarla hasta el cierre y cuenta la última. Si algo falla, descarga el archivo y mándalo por correo a <span data-mail></span>.</div>";
+  $("send-sub").innerHTML = "Plazo: hasta el domingo 29 de noviembre a las 9:00.";
+  $("step-send").innerHTML = "<div><b>Envíala</b> desde la pestaña <button type=\"button\" class=\"linkbtn\" data-goto=\"send\">Enviar</button> antes del domingo 29 de noviembre a las 9:00, cuando abren las urnas.</div>";
 }
 function payConcept() { return "Macroporra - " + (state.name.trim() || "tu nombre"); }
 function updatePayConcept() { var e = $("pay-concept"); if (e) e.textContent = payConcept(); }
@@ -1664,13 +1659,13 @@ function renderRank(j) {
     var extra = [];
     if (j.escrutado !== null && j.escrutado !== undefined && j.escrutado !== "") extra.push(fmtPts(j.escrutado) + " % escrutado");
     if (j.actualizado) extra.push("datos de " + fmtFecha(j.actualizado));
-    est.appendChild(document.createTextNode((extra.length ? " · " + extra.join(" · ") : "") + ". Calculada con el recuento provisional del Ministerio del Interior. La definitiva llegará tras el escrutinio general."));
+    est.appendChild(document.createTextNode((extra.length ? " · " + extra.join(" · ") : "") + "."));
   } else if (j.estado === "Definitivo") {
     est.appendChild(el("b", { text: "Clasificación definitiva" }));
-    est.appendChild(document.createTextNode(", con el resultado oficial del escrutinio general" + (j.actualizado ? " (" + fmtFecha(j.actualizado) + ")" : "") + "."));
+    est.appendChild(document.createTextNode((j.actualizado ? " · " + fmtFecha(j.actualizado) : "") + "."));
   } else {
     est.appendChild(el("b", { text: "Todavía no hay resultados." }));
-    est.appendChild(document.createTextNode(" Los puntos empezarán a calcularse la noche del 29 de noviembre, con el recuento del Ministerio del Interior."));
+    est.appendChild(document.createTextNode(" Los puntos aparecerán la noche del 29 de noviembre."));
     var lista = j.participantes || [];
     body.appendChild(el("p", { class: "rk-n", text: lista.length === 0 ? "Aún no hay participantes confirmados." : plural(lista.length, "participante confirmado", "participantes confirmados") }));
     if (lista.length) {
@@ -1764,13 +1759,13 @@ function renderPorras(body, gente, real, yo, j) {
   if (hay) {
     /* 1. Escaños acertados por partido */
     var cE = colsCon([real].concat(gente.map(function (g) { return g.escP; })));
-    ptTitulo(body, "Escaños acertados, por partido", "Cuántos escaños de cada partido acertó cada participante, sumando todas las provincias (en cada provincia cuenta el menor de lo que puso y lo que salió). Cada escaño acertado vale 1 punto. La fila Resultado son los escaños reales.");
+    ptTitulo(body, "Escaños acertados, por partido", "Escaños acertados de cada partido, sumando todas las provincias. La fila Resultado son los escaños reales.");
     tablaPartidos(body, gente, yo, { cols: cE, real: real, ultima: "Puntos", sumReal: 350,
       celda: function (g, p) { return { v: (g.escP && g.escP[p]) || 0 }; },
       suma: function (g) { return g.escanos; } });
 
     /* 2. Provincias clavadas */
-    ptTitulo(body, "Provincias clavadas", "Provincias en las que el participante acertó el reparto completo, partido a partido. Cada una da un bonus según su tamaño: +1 si tiene de 4 a 8 escaños, +3 de 9 a 16, +6 en Madrid y Barcelona y 0 en las de 3 escaños o menos.");
+    ptTitulo(body, "Provincias clavadas", "Provincias en las que cada participante acertó el reparto completo.");
     var cabC = el("tr", {}, [el("th", { class: "pn", text: "Participante", scope: "col" }), el("th", { class: "lst", text: "Provincias clavadas", scope: "col" }), el("th", { text: "Nº", scope: "col" }), el("th", { class: "sum", text: "Puntos", scope: "col" })]);
     ptTabla(body, cabC, gente.map(function (g) {
       var me = yo && claveNom(g.nombre) === yo, lista = (g.clav || []).slice().sort(function (a, b) { return b[1] - a[1] || PROV[a[0]].n.localeCompare(PROV[b[0]].n, "es"); });
@@ -1781,7 +1776,7 @@ function renderPorras(body, gente, real, yo, j) {
     /* 3. Ganador de cada provincia, por partido */
     var gR = j.ganReal || {};
     var cG = colsCon([gR].concat(gente.map(function (g) { return g.ganP; })));
-    ptTitulo(body, "Ganador de cada provincia, por partido", "En cuántas provincias acertó cada participante que ganaba ese partido; cada una vale 1 punto. La fila Resultado es en cuántas provincias ganó de verdad cada partido. Si hay empate en cabeza, la provincia se reparte entre los empatados; por eso pueden salir decimales.");
+    ptTitulo(body, "Ganador de cada provincia, por partido", "En cuántas provincias acertó cada participante que ganaba cada partido, frente a las que ganó de verdad.");
     tablaPartidos(body, gente, yo, { cols: cG, real: gR, etiquetaReal: "Provincias ganadas", ultima: "Puntos", sumReal: 52,
       celda: function (g, p) { return { v: (g.ganP && g.ganP[p]) || 0 }; },
       suma: function (g) { return g.ganador; } });
@@ -1791,9 +1786,7 @@ function renderPorras(body, gente, real, yo, j) {
   var cT = colsCon((hay ? [real] : []).concat(gente.map(function (g) { return g.tot; })));
   NAC4.forEach(function (p) { if (cT.indexOf(p) < 0) cT.push(p); });
   cT.sort(function (a, b) { return PARTY_ORDER.indexOf(a) - PARTY_ORDER.indexOf(b); });
-  ptTitulo(body, "Totales de España de cada porra", hay
-    ? "Escaños que suma la porra de cada participante en toda España, frente al resultado. Solo puntúan PP, PSOE, Vox y Frente Amplio: debajo de cada cifra van los puntos que da (+15 si es exacto, +9 si falla por 1 o 2, +5 por 3 a 5, +2 por 6 a 10 y +0 si falla por más)."
-    : "Escaños que suma la porra de cada participante en toda España. Cuando haya resultados, aquí verás también los puntos de cada total.");
+  ptTitulo(body, "Totales de España de cada porra", hay ? "Escaños de cada partido en toda España según cada porra, frente al resultado. Debajo, los puntos de PP, PSOE, Vox y Frente Amplio." : "Escaños de cada partido en toda España según cada porra.");
   tablaPartidos(body, gente, yo, { cols: cT, real: hay ? real : null, ultima: hay ? "Puntos" : "",
     celda: function (g, p) {
       var v = (g.tot && g.tot[p]) || 0, c = { v: v };
@@ -1803,9 +1796,7 @@ function renderPorras(body, gente, real, yo, j) {
     suma: function (g) { return g.nacional; } });
 
   /* 5. Partido más votado */
-  ptTitulo(body, "Partido más votado", hay
-    ? "El partido con más escaños en la porra de cada participante, frente al que más escaños ha sacado. Si coincide, 5 puntos (con empate, se reparten)."
-    : "El partido con más escaños en la porra de cada participante.");
+  ptTitulo(body, "Partido más votado", hay ? "Partido con más escaños en cada porra, frente al real." : "Partido con más escaños en cada porra.");
   var cabM = el("tr", {}, [el("th", { class: "pn", text: "Participante", scope: "col" }), el("th", { class: "lst", text: "Partido más votado", scope: "col" })].concat(hay ? [el("th", { class: "sum", text: "Puntos", scope: "col" })] : []));
   var filasM = [];
   if (hay) filasM.push(el("tr", { class: "real" }, [el("td", { class: "pn", text: "Resultado" }), el("td", { class: "lst" }, nombresPartidos(j.lideresReal)), el("td", { class: "num sum", text: "" })]));
