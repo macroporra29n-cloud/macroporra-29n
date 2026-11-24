@@ -336,6 +336,12 @@ textarea.code { width: 100%; min-height: 120px; margin-top: 10px; padding: 10px;
 .linkbtn { background: none; border: 0; padding: 0; text-decoration: underline; color: var(--muted); font-size: 14px; }
 @media (max-width: 380px) { table.sc td.n, table.sc th.n { white-space: normal; } table.sc th.n + th.n, table.sc td.n + td.n { padding-left: 6px; } table.sc { font-size: 14px; } .rule { padding: 14px 12px; } .stepper input { width: 48px; } .stepper button { width: 40px; } .row { gap: 8px; } .editor { padding: 14px 12px; } }
 @media (max-width: 480px) { table.sc.cmp td, table.sc.cmp th { padding: 8px 6px; } table.sc.cmp td.n, table.sc.cmp th.n { padding-right: 8px; } table.sc.cmp td:first-child, table.sc.cmp th:first-child { padding-left: 10px; } table.sc.cmp tr.child td:first-child { padding-left: 24px; } table.sc.cmp .sub { margin-left: 20px; } }
+/* Selector de porra en Resumen */
+.vsel { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 0 0 22px; padding: 12px 14px; background: var(--surface); border: 1.5px solid var(--rule); border-radius: 8px; max-width: 760px; }
+.vsel label { font-weight: 700; }
+.vsel select { flex: 1 1 200px; min-width: 0; height: 44px; padding: 0 10px; border: 1.5px solid var(--rule); background: var(--bg); border-radius: 6px; font-weight: 700; }
+.vsel-msg { flex: 1 0 100%; font-size: 14px; color: var(--muted); }
+.vsel-msg:empty { display: none; }
 /* Clasificación */
 .rk-top { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 0 0 16px; }
 .rk-top .msg { margin-top: 0; }
@@ -512,10 +518,15 @@ table.pt { border-collapse: separate; border-spacing: 0; font-size: 15px; min-wi
 
   <!-- RESUMEN -->
   <section class="panel" id="p-res" role="tabpanel" aria-labelledby="t-res" hidden>
+    <div class="vsel">
+      <label for="v-sel">Ver el resumen de</label>
+      <select id="v-sel"><option value="">Mi porra</option></select>
+      <span class="vsel-msg" id="v-msg"></span>
+    </div>
     <div class="resgrid">
       <div class="res-left">
         <h2 class="sec-title">Resumen nacional</h2>
-        <p class="sec-sub">La suma de tus provincias, comparada con el resultado de 2023. El anillo exterior es tu porra y el interior, 2023. La línea discontinua marca la mayoría absoluta (176 escaños).</p>
+        <p class="sec-sub">La suma de las provincias de la porra, comparada con el resultado de 2023. El anillo exterior es la porra y el interior, 2023. La línea discontinua marca la mayoría absoluta (176 escaños).</p>
         <div class="hemi" id="hemi"></div>
         <div class="tablewrap cmpwrap"><table class="sc cmp" id="cmp"></table></div>
         <p class="hemi-note" id="hemi-note"></p>
@@ -756,7 +767,9 @@ function applyPicks(picks) {
   });
   return { used: used, ignored: ignored };
 }
-function getPick(c, p) { return (state.picks[c] && state.picks[c][p]) || 0; }
+var VIEW = null, viewName = "", rankData = null;     /* VIEW: porra de otro participante que se está mirando en Resumen */
+function getPick(c, p) { var src = VIEW || state.picks; return (src[c] && src[c][p]) || 0; }
+function porraLbl() { return VIEW ? "Porra" : "Tu porra"; }
 function total(c) { return PROV[c].r.reduce(function (a, p) { return a + getPick(c, p); }, 0); }
 function setPick(c, p, n) {
   n = Math.floor(Number(n)) || 0;
@@ -816,7 +829,8 @@ function showTab(t) {
     $("t-" + k).setAttribute("aria-selected", k === t ? "true" : "false");
   });
   if (t === "part") renderPartidos();
-  if (t === "res") { renderSummary(); updateMap(); showSide(pinned || state.cur, true); }
+  if (t === "res") { setView(); renderSummary(); updateMap(); showSide(pinned || state.cur, true); if (!rankData) loadRank(false); }
+  else VIEW = null;
   if (t === "send") renderSend();
   if (t === "rank") loadRank(false);
   window.scrollTo(0, 0);
@@ -1065,8 +1079,8 @@ function renderHemicycle(t) {
   txt(cx, 24, "ht1", "ESCAÑOS"); txt(cx, 54, "ht2", String(TOTAL_SEATS));
   svg.appendChild(s("line", { x1: cx, y1: cy - 292, x2: cx, y2: cy - 150, class: "hmaj" }));
   txt(cx, cy - 104, "hm", "Mayoría"); txt(cx, cy - 80, "hm", "176 escaños");
-  [[-261, "hlab", "Tu porra"], [-191, "hlab alt", "2023"], [191, "hlab alt", "2023"], [261, "hlab", "Tu porra"]].forEach(function (l) { txt(cx + l[0], cy + 30, l[1], l[2]).setAttribute("text-anchor", "middle"); });
-  svg.setAttribute("aria-label", "Hemiciclo de 350 escaños. Tu porra: " + mine.filter(function (x) { return x.id !== "_sin"; }).map(function (x) { return nameOf(x.id) + " " + x.n; }).join(", ") +
+  [[-261, "hlab", porraLbl()], [-191, "hlab alt", "2023"], [191, "hlab alt", "2023"], [261, "hlab", porraLbl()]].forEach(function (l) { txt(cx + l[0], cy + 30, l[1], l[2]).setAttribute("text-anchor", "middle"); });
+  svg.setAttribute("aria-label", "Hemiciclo de 350 escaños. " + porraLbl() + ": " + mine.filter(function (x) { return x.id !== "_sin"; }).map(function (x) { return nameOf(x.id) + " " + x.n; }).join(", ") +
     ". En 2023: " + old.map(function (x) { return nameOf(x.id) + " " + x.n; }).join(", ") + ".");
   box.appendChild(svg);
 
@@ -1079,7 +1093,7 @@ function renderHemicycle(t) {
   rows = rows.filter(function (r) { return r.tu > 0 || r.y > 0; });
   rows.sort(function (a, b) { return (b.tu - a.tu) || (b.y - a.y) || (HEMI_ORDER.indexOf(a.k) - HEMI_ORDER.indexOf(b.k)); });
   var cmp = $("cmp"); cmp.textContent = "";
-  var th = el("tr", {}, [el("th", { text: "Partido" }), el("th", { class: "n", text: "Tu porra" }), el("th", { class: "n", text: "2023" }), el("th", { class: "n", text: "Dif.", title: "Diferencia entre tu porra y 2023", "aria-label": "Diferencia entre tu porra y 2023" })]);
+  var th = el("tr", {}, [el("th", { text: "Partido" }), el("th", { class: "n", text: porraLbl() }), el("th", { class: "n", text: "2023" }), el("th", { class: "n", text: "Dif.", title: "Diferencia entre tu porra y 2023", "aria-label": "Diferencia entre tu porra y 2023" })]);
   cmp.appendChild(el("thead", {}, [th]));
   var tb = el("tbody");
   function nameCell(r) { return el("td", {}, [el("span", { class: "pn", style: "background:" + r.color }), r.name, r.sub ? el("span", { class: "sub", text: r.sub }) : ""]); }
@@ -1095,7 +1109,7 @@ function renderHemicycle(t) {
   cmp.appendChild(tb);
   $("hemi-note").textContent = "Los partidos se ordenan de izquierda a derecha por convención parlamentaria; el orden no implica valoración alguna. " +
     "En 2023 el PP y UPN fueron por separado en Navarra (un escaño cada uno): aquí se suman como UPN-PP, así que el PP de 2023 aparece con 136 en lugar de 137. " +
-    (zero.length ? "Sin escaños en tu porra ni en 2023: " + zero.join(", ") + "." : "");
+    (zero.length ? "Sin escaños en la porra ni en 2023: " + zero.join(", ") + "." : "");
 }
 
 /* ───────── Resumen ───────── */
@@ -1122,7 +1136,7 @@ function renderSummary() {
       tr.appendChild(td);
     });
     tr.appendChild(el("td", { class: "num tot" + (tot !== PROV[c].s ? " bad" : ""), text: tot + "/" + PROV[c].s }));
-    tr.addEventListener("click", function () { goProvince(c); });
+    tr.addEventListener("click", function () { if (VIEW) { pinned = c; markSel(); showSide(c, true); } else goProvince(c); });
     tr.addEventListener("keydown", function (e) { if (e.key === "Enter") goProvince(c); });
     tb.appendChild(tr);
   });
@@ -1254,7 +1268,7 @@ function showSide(c, pin) {
   }
   var go = el("button", { type: "button", class: "btn primary" }, ["Editar esta provincia"]);
   go.addEventListener("click", function () { goProvince(c); });
-  side.appendChild(go);
+  if (!VIEW) side.appendChild(go);
 }
 
 /* ───────── Pistas por provincia ───────── */
@@ -1622,6 +1636,30 @@ $("b-reset").addEventListener("click", function () {
 });
 $("name").addEventListener("input", function (e) { state.name = e.target.value; save(); updatePayConcept(); });
 
+/* ───────── Resumen de otros participantes ───────── */
+function fillView() {
+  var sel = $("v-sel"), names = rankData && rankData.picks ? Object.keys(rankData.picks).sort(function (a, b) { return a.localeCompare(b, "es"); }) : [];
+  sel.textContent = "";
+  sel.appendChild(el("option", { value: "", text: "Mi porra" }));
+  names.forEach(function (n) { sel.appendChild(el("option", { value: n, text: n })); });
+  if (names.indexOf(viewName) < 0) viewName = "";
+  sel.value = viewName;
+  $("v-msg").textContent = names.length ? "" : "Aún no hay participantes confirmados.";
+  if (!$("p-res").hidden) { setView(); renderSummary(); updateMap(); showSide(pinned || state.cur, true); }
+}
+function setView() {
+  VIEW = null;
+  if (viewName && rankData && rankData.picks && rankData.picks[viewName]) {
+    var src = rankData.picks[viewName]; VIEW = {};
+    ORDER.forEach(function (c) { VIEW[c] = src[c] || {}; });
+  }
+  $("v-msg").textContent = VIEW ? "Estás viendo la porra de " + viewName + ". Es solo de consulta." : $("v-msg").textContent.indexOf("Estás viendo") === 0 ? "" : $("v-msg").textContent;
+}
+$("v-sel").addEventListener("change", function (e) {
+  viewName = e.target.value; pinned = null;
+  setView(); renderSummary(); updateMap(); showSide(state.cur, true);
+});
+
 /* ───────── Clasificación ───────── */
 var rankLoaded = false, rankBusy = false;
 function claveNom(n) { return String(n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); }
@@ -1645,6 +1683,7 @@ function loadRank(force) {
     .then(function (j) {
       if (!j || !j.ok) throw new Error("respuesta");
       rankLoaded = true;
+      rankData = j; fillView();
       renderRank(j);
       setMsg("rk-msg", "Actualizada a las " + new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) + ".", "ok");
     })
